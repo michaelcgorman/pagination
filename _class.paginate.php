@@ -99,5 +99,19 @@ class Paginate {
 	public function currentPage() {
 		return ((isset($_GET[$this->url_parameter]) && is_numeric(intval($_GET[$this->url_parameter])) && intval($_GET[$this->url_parameter]) > 0) ? intval($_GET[$this->url_parameter]) : 1);
 	}
+
+	public function getMetaLinks() {
+		$result = '';
+
+		if($this->prevPageExists()) {
+			$result .= '<link rel="prev" href="'.$this->prevPageURL().'" />';
+		}
+
+		if($this->nextPageExists()) {
+			$result .= '<link rel="next" href="'.$this->nextPageURL().'" />';
+		}
+
+		return $result;
+	}
 }
 ?>
