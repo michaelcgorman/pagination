@@ -59,16 +59,16 @@ class Paginate {
 	}
 
 	public function pageNumberURL($page = 1) {
-		$pageURL = $_SERVER['SCRIPT_NAME'] . '?';
+		$pageURL = $_SERVER['SCRIPT_NAME'];
 
 		if(strlen($_SERVER['QUERY_STRING']) === 0) {
-			return $pageURL . $this->url_parameter.'='.$page;
+			return $pageURL . '?' . $this->url_parameter.'='.$page;
 		} elseif(strpos($_SERVER['QUERY_STRING'], $this->url_parameter.'=') === 0) {
-			return $pageURL . str_replace_first($this->url_parameter.'='.$_GET[$this->url_parameter], $this->url_parameter.'='.$page, $_SERVER['QUERY_STRING']);
+			return $pageURL . '?' . str_replace_first($this->url_parameter.'='.$_GET[$this->url_parameter], $this->url_parameter.'='.$page, $_SERVER['QUERY_STRING']);
 		} elseif(strpos($_SERVER['QUERY_STRING'], '&'.$this->url_parameter.'=') !== FALSE) {
-			return $pageURL . str_replace('&'.$this->url_parameter.'='.$_GET[$this->url_parameter], '&'.$this->url_parameter.'='.$page, $_SERVER['QUERY_STRING']);
+			return $pageURL . '?' . str_replace('&'.$this->url_parameter.'='.$_GET[$this->url_parameter], '&'.$this->url_parameter.'='.$page, $_SERVER['QUERY_STRING']);
 		} else {
-			return $pageURL . $_SERVER['QUERY_STRING'].'&'.$this->url_parameter.'='.$page;
+			return $pageURL . '?' . $_SERVER['QUERY_STRING'].'&'.$this->url_parameter.'='.$page;
 		}
 	}
 
