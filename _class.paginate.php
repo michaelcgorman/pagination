@@ -3,11 +3,13 @@ class Paginate {
 	protected $results;
 	protected $results_per_page;
 	protected $url_parameter;
+	protected $links_in_each_direction;
 
 	public function __construct($results = array(), $results_per_page = 20, $url_parameter = 'page') {
 		$this->results = $results;
 		$this->results_per_page = $results_per_page;
 		$this->url_parameter = $url_parameter;
+		$this->links_in_each_direction = 3;
 	}
 
 	public function getResults() {
@@ -111,6 +113,60 @@ class Paginate {
 			$result .= '<link rel="next" href="'.$this->nextPageURL().'" />';
 		}
 
+		return $result;
+	}
+
+	public function getLinks() {
+		$each_direction = $this->links_in_each_direction;
+		$current_page = $this->currentPage();
+		$page_count = $this->pageCount();
+		$prev_links = array();
+		$current_link = '<span class="current_page">'.$current_page.'</span>';
+		$next_links = array();
+		$separator = '<span class="separator">...</span>';
+
+		for($i = $each_direction; $i > 0; $i--) {
+			if($current_page - $i > 1) {
+				$prev_links[] = $current_page - $i;
+			}
+		}
+
+		for($i = 1; $i <= $each_direction; $i++) {
+			if($current_page + $i < $page_count) {
+				$next_links[] = $current_page + $i;
+			}
+		}
+
+		ob_start();
+
+		if($this->prevPageExists()) {
+			?> <a href="<?php echo $this->firstPageURL(); ?>">1</a> <?php
+
+			if($prev_links[0] > 2) {
+				echo $separator;
+			}
+
+			foreach($prev_links as $page_num) {
+				?> <a href="<?php echo $this->pageNumberURL($page_num); ?>"><?php echo $page_num; ?></a> <?php
+			}
+		}
+
+		echo $current_link;
+
+		if($this->nextPageExists()) {
+			foreach($next_links as $page_num) {
+				?> <a href="<?php echo $this->pageNumberURL($page_num); ?>"><?php echo $page_num; ?></a> <?php
+			}
+
+			if($next_links[count($next_links) - 1] < $page_count - 1 && $current_page < $page_count - 1) {
+				echo $separator;
+			}
+
+			?> <a href="<?php echo $this->lastPageURL(); ?>"><?php echo $page_count; ?></a> <?php
+		}
+
+		$result = ob_get_contents();
+		ob_end_clean();
 		return $result;
 	}
 }
